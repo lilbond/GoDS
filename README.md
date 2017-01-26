@@ -1,2 +1,2 @@
-# GoDS
-A package for simple implementation of Gods of programming i.e. Data Structures in Go
+# golds
+A package for simple implementation of GOLDS of programming i.e. Data Structures in GoLang
