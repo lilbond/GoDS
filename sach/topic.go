@@ -2,6 +2,8 @@ package sach
 
 import (
   "fmt"
+  "io/ioutil"
+  "os"
 )
 
 type TopicHandler interface {
@@ -15,7 +17,12 @@ type topic struct {
 }
 
 func (t topic) Write(data []byte) {
-  fmt.Println(data)
+  for index := 0; index < 10; index++ {
+    err := ioutil.WriteFile(t.Path, data, os.FileMode.ModeAppend)
+    if err != nil {
+      fmt.Println(err)
+    }
+  }
 }
 
 func (t topic) Read() []byte {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"io"
 )
 
 type User struct {
@@ -22,8 +23,11 @@ func main() {
 	u.mutate()
 	fmt.Println(u.Name)
 
-	fmt.Println(exists("." + string(filepath.Separator) + "verifier/DocumentVerifie1r.go"))
-	createDirectory("." + string(filepath.Separator) + "verifier1")
+	//createDirectory("." + string(filepath.Separator) + "verifier")
+	//createFile("." + string(filepath.Separator) + "verifier/DocumentVerifier.go")
+	read("." + string(filepath.Separator) + "verifier/tests/DocumentVerifier_test.go")
+	write("." + string(filepath.Separator) + "verifier/tests/DocumentVerifier_test.go", "\n")
+	write("." + string(filepath.Separator) + "verifier/tests/DocumentVerifier_test.go", "here comes my line\n")
 }
 
 func packageRun() {
@@ -37,6 +41,7 @@ func packageRun() {
 	runner.Run()
 }
 
+//file creation
 func exists(filePath string) (exists bool) {
   exists = true
 
@@ -64,5 +69,44 @@ func createFile(filePath string) {
 	//REVIEW: panic
 	if err != nil {
 		fmt.Println(err)
+	}
+}
+
+//file read-write
+func read(filePath string) {
+	f, ferr := os.OpenFile(filePath, os.O_RDONLY, 0666)
+	if ferr != nil {
+		fmt.Println(ferr)
+		return
+	}
+
+	defer f.Close()
+	data := make([]byte, 4096)
+	for {
+		n, err := f.Read(data)
+    if err != nil {
+      if err == io.EOF {
+          break
+      }
+      fmt.Println(err)
+      return
+    }
+    data = data[:n]
+		fmt.Println(data)
+	}
+}
+
+func write(filePath string, content string) {
+	f, ferr := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if ferr != nil {
+		fmt.Println(ferr)
+		return
+	}
+	defer f.Close()
+
+	_, err := f.WriteString(content)
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 }
